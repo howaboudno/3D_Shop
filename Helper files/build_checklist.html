@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3D Shop — Build Checklist</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --plate:#E4E6E3;
+    --card:#FAFAF9;
+    --ink:#14171B;
+    --grey:#6E757D;
+    --rule:#CFD3CE;
+    --toolpath:#3A2BE0;
+    --ember:#D9431A;
+    --display:"Archivo","Helvetica Neue",Arial,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:var(--plate);color:var(--ink);
+    font-family:var(--display);font-variation-settings:"wdth" 100;
+    font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:940px;margin:0 auto;padding:48px 24px 100px}
+
+  /* masthead */
+  .mast{border-bottom:2px solid var(--ink);padding-bottom:24px}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--grey);margin-bottom:16px}
+  h1{font-variation-settings:"wdth" 118;font-weight:800;font-size:clamp(34px,6vw,58px);line-height:.94;letter-spacing:-.025em;text-transform:uppercase}
+  h1 em{font-style:normal;color:var(--toolpath)}
+  .standfirst{margin-top:16px;max-width:62ch;font-size:16px;color:#31363D}
+
+  /* progress */
+  .prog{margin:28px 0 8px}
+  .track{background:#D2D5D1;height:6px;overflow:hidden}
+  .fill{height:6px;background:var(--toolpath);width:0;transition:width .35s ease}
+  .plabel{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--grey);margin-top:8px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  .plabel b{color:var(--ink);font-weight:500}
+
+  /* standing rules */
+  .rules{margin:34px 0 40px;border:1px solid var(--rule);background:var(--card);padding:20px 22px}
+  .rules h2{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;color:var(--toolpath);margin-bottom:12px}
+  .rules ul{list-style:none;display:grid;gap:8px}
+  .rules li{padding-left:20px;position:relative;font-size:14px}
+  .rules li::before{content:"";position:absolute;left:0;top:.62em;width:9px;height:2px;background:var(--ink)}
+  code{font-family:var(--mono);font-size:12.6px;background:#EDEEEB;padding:1px 5px}
+
+  /* phase */
+  .phase{margin-bottom:14px;border:1px solid var(--rule);background:var(--card)}
+  .phase.crit{border-left:3px solid var(--toolpath)}
+  .phase.done{opacity:.62}
+  .phead{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 18px;cursor:pointer;user-select:none;background:var(--card)}
+  .phead:hover{background:#F2F2F0}
+  .pleft{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+  .znum{font-family:var(--mono);font-weight:600;font-size:13px;color:var(--plate);background:var(--ink);padding:3px 7px}
+  .phase.crit .znum{background:var(--toolpath)}
+  .ptitle{font-weight:800;font-size:17px;letter-spacing:-.01em;text-transform:uppercase;font-variation-settings:"wdth" 112}
+  .pright{display:flex;align-items:center;gap:14px;flex-shrink:0}
+  .pcount{font-family:var(--mono);font-size:12px;color:var(--grey)}
+  .arrow{font-size:10px;color:#9AA0A6;transition:transform .2s}
+  .phase.open .arrow{transform:rotate(90deg)}
+  .pbody{display:none;padding:4px 0 14px;border-top:1px solid var(--rule)}
+  .phase.open .pbody{display:block}
+
+  .badge{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;text-transform:uppercase;padding:2px 6px;border:1px solid;white-space:nowrap}
+  .b-be{border-color:var(--toolpath);color:var(--toolpath)}
+  .b-fe{border-color:#1F7A5A;color:#1F7A5A}
+  .b-db{border-color:#8A5A12;color:#8A5A12}
+  .b-cfg{border-color:var(--grey);color:var(--grey)}
+  .b-des{border-color:var(--ink);color:var(--ink)}
+  .b-crit{border-color:var(--ember);color:var(--ember)}
+
+  .goal{padding:12px 18px 4px;font-size:14px;color:#31363D;max-width:74ch}
+
+  /* items */
+  .item{display:grid;grid-template-columns:18px 46px 1fr;gap:11px;align-items:start;padding:7px 18px;cursor:pointer;border-left:3px solid transparent}
+  .item:hover{background:#F1F2EF}
+  .item.sub{padding-left:44px;grid-template-columns:18px 46px 1fr}
+  .item.sub2{padding-left:70px;font-size:13.5px}
+  .item.done{border-left-color:var(--toolpath)}
+  .item.done .itext{color:#A2A7AB;text-decoration:line-through}
+  .item.done .itext b{color:#A2A7AB}
+  .box{width:16px;height:16px;border:2px solid #A9AEB2;background:transparent;margin-top:3px;display:flex;align-items:center;justify-content:center;transition:all .12s}
+  .item.done .box{background:var(--toolpath);border-color:var(--toolpath)}
+  .box::after{content:"✓";font-size:10px;line-height:1;color:#fff;display:none}
+  .item.done .box::after{display:block}
+  .inum{font-family:var(--mono);font-size:12px;color:var(--toolpath);margin-top:3px}
+  .item.done .inum{color:#A2A7AB}
+  .itext{font-size:14px}
+  .itext b{font-variation-settings:"wdth" 108}
+  .hint{display:block;color:var(--grey);font-size:13px;margin-top:2px}
+
+  /* annotations */
+  .note{margin:10px 18px;border-left:3px solid var(--ink);background:#F1F2EF;padding:10px 14px}
+  .note.trap{border-left-color:var(--ember)}
+  .note.dec{border-left-color:var(--toolpath)}
+  .note .lbl{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--grey);display:block;margin-bottom:4px}
+  .note.trap .lbl{color:var(--ember)}
+  .note.dec .lbl{color:var(--toolpath)}
+  .note p{font-size:13.5px}
+  .ref{font-family:var(--mono);font-size:11px;color:var(--grey);white-space:nowrap}
+
+  /* deferred + footer */
+  .deferred{margin-top:44px;border-top:2px solid var(--ink);padding-top:24px}
+  .deferred h2{font-weight:800;font-size:21px;text-transform:uppercase;letter-spacing:-.015em;font-variation-settings:"wdth" 112;margin-bottom:4px}
+  .deferred > p{color:var(--grey);font-size:13.5px;margin-bottom:16px}
+  table{border-collapse:collapse;width:100%;background:var(--card);border:1px solid var(--rule)}
+  th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--rule);font-size:13.4px;vertical-align:top}
+  th{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--grey);font-weight:500}
+  tr:last-child td{border-bottom:none}
+
+  .crit-band{margin-top:40px;background:var(--ink);color:var(--plate);padding:24px 26px}
+  .crit-band .lbl{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#9BA3AC;display:block;margin-bottom:8px}
+  .crit-band p{font-size:15px;max-width:66ch}
+  .crit-band b{color:#fff;font-variation-settings:"wdth" 112}
+  .path{font-family:var(--mono);color:#8B7CFF;font-size:15px}
+
+  .tools{margin-top:26px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  button{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;background:transparent;border:1px solid var(--rule);color:var(--grey);padding:8px 14px;cursor:pointer}
+  button:hover{border-color:var(--ink);color:var(--ink)}
+  .saved{font-family:var(--mono);font-size:11px;color:var(--grey)}
+
+  @media (max-width:640px){
+    .wrap{padding:32px 14px 70px}
+    .item{grid-template-columns:18px 40px 1fr;gap:8px;padding:7px 12px}
+    .item.sub{padding-left:28px}
+    .item.sub2{padding-left:44px}
+    .phead{padding:12px}
+    .note{margin:10px 12px}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="mast">
+    <div class="eyebrow">Build checklist · v1 · companion to outline_app.md</div>
+    <h1>3D Shop<br><em>Ten Layers</em></h1>
+    <p class="standfirst">Thin vertical slices, same method as the predictions app. Each phase deploys before the next one starts. Click any line to tick it.</p>
+  </header>
+
+  <div class="prog">
+    <div class="track"><div class="fill" id="fill"></div></div>
+    <div class="plabel">
+      <span id="plabel">0 / 0 done</span>
+      <span id="phase-label"></span>
+    </div>
+  </div>
+
+  <section class="rules">
+    <h2>Standing rules — every phase, no exceptions</h2>
+    <ul>
+      <li><b>Deploy at the end of every phase.</b> A phase that only runs on localhost is not finished.</li>
+      <li><b>Alembic from commit one.</b> Postgres <span class="ref">(D16)</span> means no more Railway shell patches.</li>
+      <li><b>Integer cents everywhere</b> <span class="ref">(D4)</span>. Format at render only. No float touches money, including in JSON.</li>
+      <li><b>One authorization dependency, written once.</b> <code>get_order_for_user()</code> — buyer sees own, seller sees all.</li>
+      <li><b>The API never touches file bytes</b> <span class="ref">(D15)</span>. If you write <code>await file.read()</code>, stop.</li>
+      <li><b>Record <code>grams_used</code> on every order</b> even though v1 charges nothing for it <span class="ref">(§5.1)</span>. That is the whole migration path to per-gram.</li>
+    </ul>
+  </section>
+
+  <div id="list"></div>
+
+  <div class="tools">
+    <button onclick="expandAll()">Expand all</button>
+    <button onclick="collapseAll()">Collapse all</button>
+    <button onclick="resetAll()">Reset progress</button>
+    <span class="saved" id="saved"></span>
+  </div>
+
+  <section class="deferred">
+    <h2>Deferred</h2>
+    <p>Not "never" — each has a trigger. Nothing here gets built because it seems close.</p>
+    <table>
+      <thead><tr><th style="width:32%">Item</th><th>Trigger to revisit</th></tr></thead>
+      <tbody>
+        <tr><td>Per-gram filament charging</td><td>Scaling past the friend group. A pricing change, not a schema change — <em>if</em> the standing rule on <code>grams_used</code> holds. Only the buyer credit balance is new. <span class="ref">§5.1</span></td></tr>
+        <tr><td>Payments</td><td>When money stops moving via wishlist and Tikkie. Interface prepared, not implemented. <span class="ref">D14</span></td></tr>
+        <tr><td>Stock tracking</td><td>When Petey stops knowing what is on his shelf. <span class="ref">D8</span></td></tr>
+        <tr><td>Supplier dimension</td><td>When a second retailer beats Amazon on privacy, not on price. <span class="ref">D7</span></td></tr>
+        <tr><td>Retailer basket integration</td><td>Only after you verify the cart-add URL scheme still works for third parties. Assume it does not. <span class="ref">D6</span></td></tr>
+        <tr><td>Invite codes / spam prevention</td><td>First spam registration. <span class="ref">D13</span></td></tr>
+        <tr><td>GDPR deletion endpoint</td><td>First deletion request, or first non-friend user. Privacy statement ships in Phase 1 regardless.</td></tr>
+        <tr><td>Printer queue / capacity</td><td>When Petey accepts a deadline he cannot hit. <span class="ref">D9</span></td></tr>
+        <tr><td>Reprint / failure policy</td><td>Second failed print. <span class="ref">D12</span></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <div class="crit-band">
+    <span class="lbl">Critical path</span>
+    <p><span class="path">00 → 03 → 04</span><br><br>Everything else is <b>work you have already proven you can do</b>. Phase 0 decides what Phase 4 computes. Phase 3 is the only part of this app you have not built before. If any of the three slips, the plan slips — the rest can be reordered around your evenings without cost.</p>
+  </div>
+
+</div>
+
+<script>
+const phases = [
+  {
+    id:"p0", z:"00", title:"Design on paper", crit:true, badges:["des","crit"],
+    goal:"Everything downstream renders decisions made here. An afternoon now saves a rewrite in Phase 4. No code.",
+    items:[
+      {t:"dec", lbl:"Resolved 17 Jul", text:"Electricity is its own line on the invoice. Rate per kWh lives in settings. <code>electricity = print_hours × (printer_watts ÷ 1000) × rate_per_kwh</code>."},
+      {id:"0.1", text:"Write the electricity term into the spec formula (§4) as a separate line"},
+      {id:"0.1.1", sub:1, text:"Add <code>printer_watts</code> to the settings list — a <b>setting, not a constant</b><span class='hint'>Flashforge Adventurer 5M, 350 W for now. Second printer or a firmware change should not need a deploy.</span>"},
+      {id:"0.1.2", sub:1, text:"Add <code>electricity_rate_cents_per_kwh</code> to the settings list"},
+      {id:"0.1.3", sub:1, text:"Decide rounding: electricity on a 1 h print is ~9 cents. Confirm you bill it rather than round it to zero"},
+      {t:"trap", text:"350 W is the <b>nameplate/peak</b> draw — bed and hotend heating together at startup. A 5M averages far less than that across a long print; the bed cycles, the hotend idles. Billing 350 W flat overcharges by roughly 2×. It is cents either way, so ship it — but put a plug meter on one 6 h print, read the real kWh, and tune <code>printer_watts</code> to the average. That is why it is a setting."},
+      {id:"0.2", text:"Write three worked examples with expected totals <b>in cents</b> — these become the Phase 4 unit tests verbatim"},
+      {id:"0.2.1", sub:1, text:"<b>Small</b> — 1 h print, 15 g from stock, pickup → tier A + electricity. Consumables line = 0, shipping = 0"},
+      {id:"0.2.2", sub:1, text:"<b>Medium</b> — 6 h print, 90 g, buyer buys 1 spool + primer, delivery as brievenbuspakje → tier + electricity + shipping + buyer-purchased total"},
+      {id:"0.2.3", sub:1, text:"<b>Large</b> — 18 h print, 400 g from stock, delivery as pakket ≤10 kg → tier + electricity + shipping"},
+      {id:"0.2.4", sub:1, text:"<b>Define the tier boundaries exactly</b> before writing the numbers<span class='hint'>Your tiers are €5 &lt;6h, €10 &lt;12h, €25 &gt;12h — and example 0.2.2 is exactly 6 h, which those rules do not cover. Write them as half-open intervals: [0,6) → €5, [6,12) → €10, [12,∞) → €25. A 12 h print must not fall through a gap.</span>"},
+      {id:"0.2.5", sub:1, text:"Save the three as a table in the spec — fixtures, not documentation"},
+      {id:"0.3", text:"Draw the state machine as a <b>transition table, not a picture</b>"},
+      {id:"0.3.1", sub:1, text:"One row per legal move: <code>(from, to, allowed_role)</code>. Every arrow gets an owner"},
+      {id:"0.3.2", sub:1, text:"Confirm <code>needs_info</code> is a column, not a row <span class='ref'>(§6)</span>"},
+      {id:"0.3.3", sub:1, text:"Decide who may cancel, and up to which state"},
+      {id:"0.4", text:"Finalise the ERD from spec §7"},
+      {id:"0.4.1", sub:1, text:"Decide <code>settings</code> shape: key/value vs typed table<span class='hint'>~10 settings. Key/value is faster to write and worse to query. Take key/value and move on.</span>"},
+      {id:"0.4.2", sub:1, text:"Fix the <code>order_lines.kind</code> enum now: <code>print_fee | electricity | consumables | shipping | buyer_purchased</code>"},
+      {id:"0.5", text:"Wireframe two screens only: seller order list, seller order detail<span class='hint'>80% of the app happens on the second one. The buyer side is a read-only mirror.</span>"},
+      {id:"0.6", text:"Create accounts before you need them: Postgres instance, R2 bucket, hosting project<span class='hint'>Not the SMTP provider — that waits for Phase 6.</span>"},
+      {t:"note", lbl:"Done when", text:"Three totals in cents you could hand to Petey, and a transition table where every arrow names who may pull it."},
+    ]
+  },
+  {
+    id:"p1", z:"01", title:"Skeleton", badges:["cfg","be","fe"],
+    goal:"An empty app, live on real URLs, with login that lands each role in the right place.",
+    items:[
+      {id:"1.0", text:"Create the repo, <code>.gitignore</code>, and first commit"},
+      {id:"1.1", text:"Python venv + install: <code>fastapi uvicorn sqlalchemy alembic psycopg[binary] pydantic-settings passlib[bcrypt] python-jose python-multipart boto3</code>"},
+      {id:"1.2", text:"Scaffold the backend folders — same shape as the predictions app"},
+      {id:"1.2.1", sub:1, text:"<code>main.py</code> — app entry point"},
+      {id:"1.2.2", sub:1, text:"<code>models/</code> — SQLAlchemy tables"},
+      {id:"1.2.3", sub:1, text:"<code>schemas/</code> — Pydantic request/response shapes"},
+      {id:"1.2.4", sub:1, text:"<code>routers/</code> — route handlers"},
+      {id:"1.2.5", sub:1, text:"<code>services/</code> — business logic. <b><code>services/pricing.py</code> lives here</b>, same slot the scoring engine had"},
+      {id:"1.2.6", sub:1, text:"<code>core/</code> — config, security, database session"},
+      {id:"1.3", text:"<code>docker-compose.yml</code> with Postgres for local dev <span class='ref'>(D16)</span>"},
+      {id:"1.4", text:"Alembic: <code>init</code>, wire <code>env.py</code> to your metadata, generate and commit the first migration"},
+      {id:"1.4.1", sub:1, text:"Verify <code>alembic downgrade -1</code> then <code>upgrade head</code> works before you have data to lose"},
+      {id:"1.5", text:"<code>core/config.py</code> — pydantic-settings reading from env. No secret in the repo, from commit one"},
+      {id:"1.6", text:"<code>core/security.py</code> — password hashing + JWT create/verify"},
+      {id:"1.7", text:"User model: id, name, email, hashed_password, role, is_superuser, created_at"},
+      {id:"1.8", text:"<code>/auth/register</code> and <code>/auth/login</code>"},
+      {id:"1.9", text:"<b>Pick one auth transport and commit to it</b> — httpOnly cookie or bearer token in memory<span class='hint'>Half of each is how you get a CSRF hole and a logout bug.</span>"},
+      {id:"1.10", text:"<code>get_current_user</code> dependency"},
+      {id:"1.11", text:"Role enum <code>seller | buyer</code> + <code>is_superuser</code> on your account <span class='ref'>(§2)</span>"},
+      {id:"1.12", text:"Seed Petey's seller account by hand<span class='hint'>There is exactly one seller. No UI ever needs to create another.</span>"},
+      {id:"1.13", text:"Test every auth endpoint in Postman"},
+      {id:"1.14", text:"Scaffold the frontend with Vite + React"},
+      {id:"1.14.1", sub:1, text:"React Router"},
+      {id:"1.14.2", sub:1, text:"Auth context providing current user"},
+      {id:"1.14.3", sub:1, text:"Protected route wrapper"},
+      {id:"1.14.4", sub:1, text:"Role-based landing: seller → seller dashboard, buyer → buyer dashboard. Both empty"},
+      {id:"1.15", text:"Static privacy statement page <span class='ref'>(D5)</span><span class='hint'>One route and a page of text. Cheap now, annoying once there is data.</span>"},
+      {id:"1.16", text:"Deploy: API, Postgres, frontend"},
+      {id:"1.16.1", sub:1, text:"CORS config"},
+      {id:"1.16.2", sub:1, text:"Env vars set in both environments"},
+      {id:"1.16.3", sub:1, text:"<code>/health</code> endpoint you can curl"},
+      {id:"1.17", text:"Smoke test: register on your phone against the production URL, land on the buyer dashboard"},
+      {t:"trap", text:"Deploying an empty app feels like a wasted evening. It is the cheapest possible moment to find out your CORS config, cookie domain and database URL disagree with each other."},
+    ]
+  },
+  {
+    id:"p2", z:"02", title:"Orders, minimal", badges:["be","fe","db"],
+    goal:"A buyer submits a request, Petey reads it. No files, no money, no chat, one status.",
+    items:[
+      {id:"2.0", text:"Order model: id, ref, buyer_id, title, description, deadline, delivery_method, dimensions, notes, status, created_at"},
+      {id:"2.1", text:"Human-readable ref <code>ORD-0001</code> from a <b>Postgres sequence</b>, never <code>count(*)+1</code> <span class='ref'>(D18)</span>"},
+      {id:"2.2", text:"Alembic migration + verify tables"},
+      {id:"2.3", text:"Pydantic schemas for create / read"},
+      {id:"2.4", text:"<code>POST /orders</code> — buyer only. Status hardcoded to <code>Placed</code>"},
+      {id:"2.5", text:"<code>GET /orders</code> — seller gets all, buyer gets own. One endpoint, one scoping rule"},
+      {id:"2.6", text:"<code>GET /orders/{id}</code> via the <code>get_order_for_user</code> dependency"},
+      {id:"2.6.1", sub:1, text:"Buyer A requesting buyer B's order id gets <b>404, not 403</b><span class='hint'>403 confirms the order exists. Write this test now, while there are two users and no noise.</span>"},
+      {id:"2.7", text:"Buyer create-order form: title, description, deadline, pickup-or-delivery, dimensions, post-processing notes"},
+      {id:"2.7.1", sub:1, text:"Dimensions are free text in v1<span class='hint'>You are not computing shipping tiers from them — Petey picks the tier by hand (D11).</span>"},
+      {id:"2.8", text:"Seller order list view"},
+      {id:"2.9", text:"Seller order detail, read-only"},
+      {id:"2.10", text:"Deploy. Petey opens a real request you submitted, on his phone, and can read every field"},
+    ]
+  },
+  {
+    id:"p3", z:"03", title:"Files", crit:true, badges:["be","fe","crit"],
+    goal:"STL + images uploaded straight from the browser to object storage, rendered in one Printables-style overview. The only genuinely new engineering in this app. If presigning fights you, find out in week two, not week eight.",
+    items:[
+      {id:"3.0", text:"Create the R2 bucket. Access key + secret into env, never the frontend"},
+      {id:"3.1", text:"<b>Bucket CORS policy</b> — allow PUT from your frontend origin<span class='hint'>Budget real time here. This is where the day goes.</span>"},
+      {id:"3.2", text:"Attachment model: id, order_id, kind (stl|image), storage_key, filename, size_bytes, created_at"},
+      {id:"3.3", text:"<code>POST /orders/{id}/attachments/presign</code> → returns PUT url + storage key"},
+      {id:"3.3.1", sub:1, text:"Validate extension <b>before</b> signing"},
+      {id:"3.3.2", sub:1, text:"Validate declared content-length before signing<span class='hint'>An unsigned request costs nothing to refuse.</span>"},
+      {id:"3.3.3", sub:1, text:"Storage key is server-generated (uuid), never the client's filename"},
+      {id:"3.4", text:"Browser PUTs directly to R2 <span class='ref'>(D15)</span>"},
+      {id:"3.4.1", sub:1, text:"Progress bar from the XHR, not a spinner<span class='hint'>50 MB on home upload is a minute of silence otherwise.</span>"},
+      {id:"3.5", text:"Confirm callback → <code>attachments</code> row"},
+      {id:"3.6", text:"<b>Decide the orphan policy</b> — upload succeeded, callback failed<span class='hint'>Nightly reconcile, or accept the leak in v1. Either is fine. Not deciding is not.</span>"},
+      {id:"3.7", text:"Magic-byte check on STL <span class='ref'>(D10)</span>"},
+      {id:"3.7.1", sub:1, text:"ASCII STL starts with <code>solid</code>"},
+      {id:"3.7.2", sub:1, text:"Binary STL = 80-byte header + uint32 triangle count; assert <code>84 + count×50 == file_size</code>"},
+      {id:"3.7.3", sub:1, text:"That check is ten lines and is your entire virus scanning"},
+      {id:"3.8", text:"Enforce the 50 MB cap client-side <b>and</b> at presign time"},
+      {id:"3.9", text:"Read path = short-TTL presigned GET. <b>The bucket is never public</b>"},
+      {id:"3.10", text:"Image gallery on the order detail page"},
+      {id:"3.11", text:"three.js <code>STLLoader</code> viewer in the same overview"},
+      {id:"3.11.1", sub:1, text:"Parse in a web worker, or show the loader <em>before</em> parsing starts"},
+      {id:"3.11.2", sub:1, text:"Orbit controls + a bounding-box readout — Petey needs the dimensions, not a beauty shot"},
+      {id:"3.12", text:"Deploy. Upload a real STL from your phone; Petey rotates it in the browser"},
+      {id:"3.13", text:"Check the API logs: it never saw a byte"},
+      {t:"trap", text:"Presigned PUT signature mismatch is the classic two-hour bug — the headers the browser sends must match exactly what you signed, <code>Content-Type</code> included. Second one: parsing a 50 MB binary STL on the main thread freezes the tab, and it looks like a crash, not a wait."},
+    ]
+  },
+  {
+    id:"p4", z:"04", title:"Pricing engine", crit:true, badges:["be","fe","crit"],
+    goal:"Petey enters print hours, grams and materials; the app produces a quote; accepting it freezes every rate onto the order forever.",
+    items:[
+      {id:"4.0", text:"Settings storage + <code>GET/PUT /settings</code>, seller only"},
+      {id:"4.1", text:"Settings page fields"},
+      {id:"4.1.1", sub:1, text:"Material price per unit"},
+      {id:"4.1.2", sub:1, text:"Material price per kg"},
+      {id:"4.1.3", sub:1, text:"Print tiers — <b>thresholds and amounts both editable</b><span class='hint'>€5/€10/€25 and 6h/12h are examples, not constants.</span>"},
+      {id:"4.1.4", sub:1, text:"Electricity rate per kWh <span class='ref'>(0.1.2)</span>"},
+      {id:"4.1.5", sub:1, text:"Printer watts <span class='ref'>(0.1.1)</span>"},
+      {id:"4.1.6", sub:1, text:"Shipping tiers: brievenbuspakje ≤2 cm/≤2 kg · pakket ≤10 kg · pakket &gt;10 kg <span class='ref'>(D11)</span>"},
+      {id:"4.2", text:"<b>Write <code>services/pricing.py</code> as a pure function first</b> — inputs → list of lines. No DB, no HTTP, no framework"},
+      {id:"4.3", text:"Unit-test it against the three examples from 0.2 <b>before any UI exists</b>"},
+      {id:"4.3.1", sub:1, text:"Add the boundary cases: exactly 6 h, exactly 12 h <span class='ref'>(0.2.4)</span>"},
+      {id:"4.3.2", sub:1, text:"Add the zero cases: 0 g, pickup, no materials"},
+      {id:"4.4", text:"Materials catalog: name, unit, price_per_unit_cents, price_per_kg_cents, purchase_url. Seller CRUD"},
+      {id:"4.5", text:"<code>order_materials</code>: order_id, material_id, qty, buyer_purchased, purchase_url, amount_cents"},
+      {id:"4.6", text:"Quote UI on the order detail page"},
+      {id:"4.6.1", sub:1, text:"<code>print_hours</code> and <code>grams_used</code> — manual entry, from Petey's slicer <span class='ref'>(D1)</span>"},
+      {id:"4.6.2", sub:1, text:"Materials picker with quantities"},
+      {id:"4.6.3", sub:1, text:"Per-line <code>buyer_purchased</code> toggle"},
+      {id:"4.6.4", sub:1, text:"Shipping tier dropdown, shown only when delivery"},
+      {id:"4.6.5", sub:1, text:"Live total preview as he types"},
+      {id:"4.7", text:"<b>Snapshot on accept</b> <span class='ref'>(D3)</span> — write <code>order_lines</code> rows carrying the rate used <em>and</em> the resulting amount"},
+      {id:"4.7.1", sub:1, text:"After accept, the order never reads <code>settings</code> again. Anywhere"},
+      {id:"4.8", text:"<b>The test that matters</b>: accept an order, change every rate in settings, reload, assert the total has not moved by one cent"},
+      {id:"4.9", text:"Document the rounding rule in the function docstring"},
+      {id:"4.10", text:"The <code>consumables</code> line exists and is valued <code>0</code> <span class='ref'>(D2, §5.1)</span><span class='hint'>Do not delete it because it is always zero. Its existence is the migration path.</span>"},
+      {id:"4.11", text:"Cents → euro formatting at render only, one helper, used everywhere"},
+      {id:"4.12", text:"Deploy. Petey quotes a real order end to end"},
+      {t:"trap", text:"Rounding. Decide once and write it down: <b>round each line to cents, then sum</b>. Not sum then round. The two disagree by a cent often enough that Petey will notice, and you will not remember which one you chose."},
+    ]
+  },
+  {
+    id:"p5", z:"05", title:"Status machine", badges:["be","fe"],
+    goal:"Wire the transition table from 0.3. Legal moves only, by the right role.",
+    items:[
+      {id:"5.0", text:"Status enum + migration: Draft, Placed, Quoted, Accepted, Declined, Cancelled, AwaitingMaterials, InProgress, Finished, Completed <span class='ref'>(§6)</span>"},
+      {id:"5.1", text:"Transition table in code <b>as data</b> — one dict, single source of truth"},
+      {id:"5.1.1", sub:1, text:"The endpoint asks the table. It never contains an <code>if status ==</code> chain"},
+      {id:"5.2", text:"<code>POST /orders/{id}/transition</code> — illegal move → <b>409 Conflict</b>, not 400<span class='hint'>The request is well-formed; the state is wrong.</span>"},
+      {id:"5.3", text:"<code>needs_info</code> boolean flag + badge <span class='ref'>(§6)</span>"},
+      {id:"5.3.1", sub:1, text:"Either party raises it, seller clears it"},
+      {id:"5.3.2", sub:1, text:"It never overwrites a status — that is the entire reason it is a flag"},
+      {id:"5.4", text:"Seller: accept / decline the job, from <code>Placed</code> or <code>Quoted</code>"},
+      {id:"5.5", text:"Buyer: accept / decline the quote, from <code>Quoted</code>"},
+      {id:"5.6", text:"Cancel, available before <code>InProgress</code>"},
+      {id:"5.7", text:"<code>order_status_history(order_id, from, to, actor_id, at)</code> — one table, one insert<span class='hint'>You will want it the first time someone asks when they accepted something.</span>"},
+      {id:"5.8", text:"Status badges on both order lists"},
+      {id:"5.9", text:"Walk every arrow in the 0.3 table by hand once"},
+      {id:"5.10", text:"Confirm every arrow <em>not</em> in the table returns 409"},
+    ]
+  },
+  {
+    id:"p6", z:"06", title:"Chat", badges:["be","fe","cfg"],
+    goal:"A message thread per order, plus the email nudge that makes it work. Polling, not websockets — your own call, and correct at this volume.",
+    items:[
+      {id:"6.0", text:"Message model: id, order_id, author_id, body, created_at"},
+      {id:"6.1", text:"<code>GET/POST /orders/{id}/messages</code>, reusing the Phase 2 authz dependency"},
+      {id:"6.2", text:"Thread UI on the order detail page, both sides"},
+      {id:"6.3", text:"Poll every 15–30 s while the order detail is open"},
+      {id:"6.3.1", sub:1, text:"Stop polling on tab blur"},
+      {id:"6.4", text:"<code>last_read_at</code> per user per order → unread indicator<span class='hint'>The difference between a thread people use and a thread people forget.</span>"},
+      {id:"6.5", text:"<b>New dependency</b>: SMTP provider (Resend or Postmark free tier)<span class='hint'>In neither the original outline nor your stack list until now.</span>"},
+      {id:"6.5.1", sub:1, text:"Verify the sending domain"},
+      {id:"6.5.2", sub:1, text:"Set SPF + DKIM, or your mail lands in spam and the feature is decorative"},
+      {id:"6.6", text:"Notify-by-email opt-in checkbox, honoured per user"},
+      {id:"6.7", text:"Email contains a link and nothing else <span class='ref'>(D5)</span><span class='hint'>No order contents, no addresses, no costs in the body.</span>"},
+      {id:"6.8", text:"Never email the author of the message"},
+      {id:"6.9", text:"Throttle: max one email per order per 15 minutes"},
+      {t:"trap", text:"One email per message and your friends mute the address within a week — after which they never see a real update again. The throttle is not a nicety."},
+    ]
+  },
+  {
+    id:"p7", z:"07", title:"Materials request flow", badges:["be","fe"],
+    goal:"The one flow the whole app exists for: Petey needs a spool, the buyer buys it, Petey's address stays off the invoice.",
+    items:[
+      {id:"7.0", text:"Seller flags material lines as <code>buyer_purchased</code>"},
+      {id:"7.1", text:"Wishlist URL per order, pasted by Petey <span class='ref'>(D6, D7)</span>"},
+      {id:"7.1.1", sub:1, text:"<code>order_materials.purchase_url</code> overrides <code>materials.purchase_url</code><span class='hint'>Materials are catalog <b>plus</b> per-order links. Build only the catalog field and this phase stalls.</span>"},
+      {id:"7.2", text:"Transition → <code>AwaitingMaterials</code>"},
+      {id:"7.2.1", sub:1, text:"Skipped entirely when nothing needs buying"},
+      {id:"7.3", text:"Buyer view: the material list, the cost, accept / decline the additional spend"},
+      {id:"7.4", text:"Buyer clicks through to the wishlist, ticks purchased → <code>purchased_confirmed_at</code>"},
+      {id:"7.5", text:"Petey confirms arrival → <code>InProgress</code>"},
+      {id:"7.6", text:"Confirm shipping is <b>already inside the number the buyer accepted</b> <span class='ref'>(D11)</span><span class='hint'>Nothing gets sprung after acceptance.</span>"},
+      {id:"7.7", text:"Deploy. Run one real order through the full flow with Petey"},
+      {t:"note", lbl:"Why it works", text:"Amazon wishlist is load-bearing — it is the only mechanism here that hides the delivery address. Joybuy and AliExpress do not. The alternatives are not equivalent, which is why there is no supplier dimension."},
+    ]
+  },
+  {
+    id:"p8", z:"08", title:"Portfolio", badges:["be","fe"],
+    goal:"Petey's shop window, and the shortest path from browsing to ordering.",
+    items:[
+      {id:"8.0", text:"<code>portfolio_projects</code> + <code>portfolio_images</code> models"},
+      {id:"8.1", text:"Seller create + publish form"},
+      {id:"8.2", text:"Images upload via the Phase 3 presign path — no second upload mechanism"},
+      {id:"8.3", text:"Public read: guests, no auth <span class='ref'>(§2)</span>"},
+      {id:"8.3.1", sub:1, text:"Presigned GETs still apply. Guests get URLs, not the bucket"},
+      {id:"8.4", text:"Materials, duration and cost are <b>frozen snapshot fields</b>, not a join back to the order"},
+      {id:"8.5", text:"\"Order this\" → new <code>Draft</code> prefilled with identical parameters <span class='ref'>(D17)</span>"},
+      {id:"8.5.1", sub:1, text:"Editable before submitting"},
+      {id:"8.5.2", sub:1, text:"Not auto-accepted — it enters at <code>Placed</code> like any other request"},
+      {id:"8.6", text:"Carousel on the buyer welcome page"},
+      {id:"8.7", text:"Welcome page copy: rules and restrictions for print requests"},
+      {t:"trap", text:"Joining a portfolio project live to its source order means deleting an order silently rewrites your shop window. The project says what it cost <em>then</em>."},
+    ]
+  },
+  {
+    id:"p9", z:"09", title:"Dashboard, metrics & polish", badges:["fe","cfg"],
+    goal:"Aggregate queries over data that already exists. Nothing here is new — that is the point.",
+    items:[
+      {id:"9.0", text:"Seller dashboard tabs: open · quoted · accepted · awaiting materials"},
+      {id:"9.1", text:"Metrics: order count, total print hours, total costs"},
+      {id:"9.1.1", sub:1, text:"Read off <code>order_lines</code>, <b>never recomputed from settings</b>"},
+      {id:"9.2", text:"Buyer view: their open orders and anything flagged <code>needs_info</code>"},
+      {id:"9.3", text:"Mobile-responsive check across every page"},
+      {id:"9.4", text:"User-facing error messages for API failures — not a raw 500"},
+      {id:"9.5", text:"Empty states: no orders yet, no portfolio yet"},
+      {id:"9.6", text:"End-to-end smoke test with Petey and one friend, on a real order, on real hardware"},
+      {t:"note", lbl:"Why it's ninth", text:"A dashboard is the most satisfying thing to build and the least useful thing to own with no data behind it. Building it first is how side projects die at 60%."},
+    ]
+  },
+];
+
+const badgeMap = {
+  be:'<span class="badge b-be">Backend</span>',
+  fe:'<span class="badge b-fe">Frontend</span>',
+  db:'<span class="badge b-db">Database</span>',
+  cfg:'<span class="badge b-cfg">Config</span>',
+  des:'<span class="badge b-des">Design</span>',
+  crit:'<span class="badge b-crit">Critical path</span>',
+};
+
+const KEY = 'shop3d_build_done';
+let done = {};
+let openState = {};
+
+async function loadDone(){
+  try{ if(window.storage){ const r = await window.storage.get(KEY); if(r && r.value) return JSON.parse(r.value); } }catch(e){}
+  try{ return JSON.parse(localStorage.getItem(KEY) || '{}'); }catch(e){ return {}; }
+}
+async function saveDone(){
+  const v = JSON.stringify(done);
+  let ok = false;
+  try{ if(window.storage){ await window.storage.set(KEY, v); ok = true; } }catch(e){}
+  try{ localStorage.setItem(KEY, v); ok = true; }catch(e){}
+  document.getElementById('saved').textContent = ok ? 'Progress saved' : 'Not saved — download the file to keep progress';
+}
+
+const checkItems = p => p.items.filter(i => i.id);
+const allIds = () => phases.flatMap(p => checkItems(p).map(i => i.id));
+
+function render(){
+  const list = document.getElementById('list');
+  list.innerHTML = '';
+  phases.forEach(p => {
+    const items = checkItems(p);
+    const cnt = items.filter(i => done[i.id]).length;
+    const all = cnt === items.length;
+    if(openState[p.id] === undefined) openState[p.id] = cnt > 0 && !all;
+
+    const div = document.createElement('div');
+    div.className = 'phase' + (p.crit ? ' crit' : '') + (openState[p.id] ? ' open' : '') + (all ? ' done' : '');
+    div.innerHTML = `
+      <div class="phead" data-p="${p.id}">
+        <span class="pleft">
+          <span class="znum">${p.z}</span>
+          <span class="ptitle">${p.title}</span>
+          ${p.badges.map(b => badgeMap[b]).join(' ')}
+        </span>
+        <span class="pright">
+          <span class="pcount">${cnt}/${items.length}</span>
+          <span class="arrow">▶</span>
+        </span>
+      </div>
+      <div class="pbody"><p class="goal">${p.goal}</p></div>`;
+
+    const body = div.querySelector('.pbody');
+    p.items.forEach(it => {
+      if(!it.id){
+        const n = document.createElement('div');
+        n.className = 'note ' + (it.t === 'trap' ? 'trap' : it.t === 'dec' ? 'dec' : '');
+        n.innerHTML = `<span class="lbl">${it.lbl || (it.t === 'trap' ? 'Trap' : 'Note')}</span><p>${it.text}</p>`;
+        body.appendChild(n);
+        return;
+      }
+      const el = document.createElement('div');
+      el.className = 'item' + (it.sub === 1 ? ' sub' : it.sub === 2 ? ' sub2' : '') + (done[it.id] ? ' done' : '');
+      el.innerHTML = `<div class="box"></div><span class="inum">${it.id}</span><span class="itext">${it.text}</span>`;
+      el.addEventListener('click', () => toggle(it.id));
+      body.appendChild(el);
+    });
+
+    div.querySelector('.phead').addEventListener('click', () => {
+      openState[p.id] = !openState[p.id];
+      render();
+    });
+    list.appendChild(div);
+  });
+  updateProgress();
+}
+
+function toggle(id){
+  done[id] = !done[id];
+  saveDone();
+  render();
+}
+
+function updateProgress(){
+  const ids = allIds();
+  const n = ids.filter(i => done[i]).length;
+  const pct = ids.length ? (n / ids.length * 100) : 0;
+  document.getElementById('fill').style.width = pct.toFixed(1) + '%';
+  document.getElementById('plabel').innerHTML = `<b>${n}</b> / ${ids.length} done · <b>${pct.toFixed(0)}%</b>`;
+  const current = phases.find(p => checkItems(p).some(i => !done[i.id]));
+  document.getElementById('phase-label').innerHTML = current
+    ? `Current phase <b>${current.z} — ${current.title}</b>`
+    : `<b>All phases complete</b>`;
+}
+
+function expandAll(){ phases.forEach(p => openState[p.id] = true); render(); }
+function collapseAll(){ phases.forEach(p => openState[p.id] = false); render(); }
+function resetAll(){ if(confirm('Reset all progress?')){ done = {}; saveDone(); render(); } }
+
+(async () => { done = await loadDone(); render(); })();
+</script>
+</body>
+</html>
